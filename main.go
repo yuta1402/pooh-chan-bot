@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
@@ -40,9 +41,12 @@ func main() {
 
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				replyText := message.Text
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyText)).Do(); err != nil {
-					log.Print(err)
+				if strings.Contains(message.Text, "ぷぅちゃん") {
+					replyText := "ぷぅちゃん！"
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyText)).Do(); err != nil {
+						log.Print(err)
+					}
 				}
 			}
 		}
