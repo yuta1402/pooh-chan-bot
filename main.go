@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
+	"github.com/yuta1402/pooh-chan-bot/pkg/weatherhacks"
 )
 
 type WordCommand struct {
@@ -47,31 +46,19 @@ func replyPoohChan(string) linebot.SendingMessage {
 }
 
 func replyWeather(string) linebot.SendingMessage {
-	values := url.Values{}
-	values.Add("city", "400040")
-	resp, err := http.Get("http://weather.livedoor.com/forecast/webservice/json/v1" + "?" + values.Encode())
-	if err != nil {
-		log.Print(err)
-		return nil
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	res, err := weatherhacks.GetForecast("130010")
 	if err != nil {
 		log.Print(err)
 		return nil
 	}
 
-	// fmt.Println(string(body))
-
-	res := ForecastResponse{}
-	if err := json.Unmarshal(body, &res); err != nil {
-		log.Print(err)
+	if len(res.Forecasts) <= 0 {
+		log.Print(errors.New("forecast data is not available"))
+		return nil
 	}
 
-	log.Print(res)
-	return nil
-	// return linebot.NewTextMessage(string(body))
+	telop := res.Forecasts[0].Telop
+	return linebot.NewTextMessage(telop)
 }
 
 func main() {
