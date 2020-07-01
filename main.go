@@ -104,6 +104,7 @@ func main() {
 						if _, err = bot.ReplyMessage(event.ReplyToken, replyMessage).Do(); err != nil {
 							log.Print(err)
 						}
+						break
 					}
 				}
 			}
