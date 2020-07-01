@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
@@ -27,10 +26,10 @@ type WeatherHack struct {
 
 type ForecastResponse struct {
 	Forecasts []struct {
-		DataLabel string
-		Telop     string
-		Date      time.Time
-	}
+		DataLabel string `json:"data_label"`
+		Telop     string `json:"telop"`
+		Date      string `json:"date"`
+	} `json:"forecasts"`
 }
 
 func (wc WordCommand) canHook(text string) bool {
