@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -14,6 +16,11 @@ import (
 type WordCommand struct {
 	AllHookWords []string
 	MakeReply    func(string) linebot.SendingMessage
+}
+
+type WeatherHack struct {
+	Title       string   `xml:"channel>title"`
+	Description []string `xml:"channel>item>description"`
 }
 
 func (wc WordCommand) canHook(text string) bool {
@@ -28,6 +35,27 @@ func (wc WordCommand) canHook(text string) bool {
 
 func replyPoohChan(string) linebot.SendingMessage {
 	return linebot.NewTextMessage("ぷぅちゃん！")
+}
+
+func replyWeather(string) linebot.SendingMessage {
+	values := url.Values{}
+	values.Add("city", "400040")
+	res, err := http.Get("http://weather.livedoor.com/forecast/webservice/json/v1" + "?" + values.Encode())
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	fmt.Println(string(body))
+	return linebot.NewTextMessage(string(body))
 }
 
 func main() {
@@ -47,6 +75,8 @@ func main() {
 	}
 
 	commands := []WordCommand{
+		{[]string{"ぷぅちゃん", "天気"}, replyWeather},
+		{[]string{"ぷーちゃん", "天気"}, replyWeather},
 		{[]string{"ぷぅちゃん"}, replyPoohChan},
 		{[]string{"ぷーちゃん"}, replyPoohChan},
 	}
