@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
@@ -21,6 +23,14 @@ type WordCommand struct {
 type WeatherHack struct {
 	Title       string   `xml:"channel>title"`
 	Description []string `xml:"channel>item>description"`
+}
+
+type ForecastResponse struct {
+	Forecasts []struct {
+		DataLabel string
+		Telop     string
+		Date      time.Time
+	}
 }
 
 func (wc WordCommand) canHook(text string) bool {
@@ -40,22 +50,29 @@ func replyPoohChan(string) linebot.SendingMessage {
 func replyWeather(string) linebot.SendingMessage {
 	values := url.Values{}
 	values.Add("city", "400040")
-	res, err := http.Get("http://weather.livedoor.com/forecast/webservice/json/v1" + "?" + values.Encode())
+	resp, err := http.Get("http://weather.livedoor.com/forecast/webservice/json/v1" + "?" + values.Encode())
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Print(err)
 		return nil
 	}
 
-	defer res.Body.Close()
+	// fmt.Println(string(body))
 
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
+	res := ForecastResponse{}
+	if err := json.Unmarshal(body, &res); err != nil {
 		log.Print(err)
-		return nil
 	}
 
-	fmt.Println(string(body))
-	return linebot.NewTextMessage(string(body))
+	log.Print(res)
+	return nil
+	// return linebot.NewTextMessage(string(body))
 }
 
 func main() {
