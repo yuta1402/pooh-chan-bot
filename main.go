@@ -18,19 +18,6 @@ type WordCommand struct {
 	MakeReply    func(string) linebot.SendingMessage
 }
 
-type WeatherHack struct {
-	Title       string   `xml:"channel>title"`
-	Description []string `xml:"channel>item>description"`
-}
-
-type ForecastResponse struct {
-	Forecasts []struct {
-		DataLabel string `json:"data_label"`
-		Telop     string `json:"telop"`
-		Date      string `json:"date"`
-	} `json:"forecasts"`
-}
-
 func (wc WordCommand) canHook(text string) bool {
 	for _, word := range wc.AllHookWords {
 		if !strings.Contains(text, word) {
