@@ -32,22 +32,45 @@ func replyPoohChan(string) linebot.SendingMessage {
 	return linebot.NewTextMessage("ぷぅちゃん！")
 }
 
-func replyWeather(string) linebot.SendingMessage {
-	res, err := weatherhacks.GetForecast("130010")
+func getForecastMessage(cityID string) (string, error) {
+	res, err := weatherhacks.GetForecast(cityID)
 	if err != nil {
-		log.Print(err)
-		return nil
+		return "", err
 	}
 
 	if len(res.Forecasts) <= 0 {
-		log.Print(errors.New("forecast data is not available"))
-		return nil
+		return "", errors.New("forecast data is not available")
 	}
 
-	dateLabel := res.Forecasts[0].DateLabel
 	telop := res.Forecasts[0].Telop
+	city := res.Location.City
 
-	text := dateLabel + "の天気は「" + telop + "」だよ♪"
+	text := city + ": " + telop
+
+	return text, nil
+}
+
+func forecastMessage() (string, error) {
+	text0, err := getForecastMessage("130010")
+	if err != nil {
+		return "", err
+	}
+
+	text1, err := getForecastMessage("230010")
+	if err != nil {
+		return "", err
+	}
+
+	text := "今日の天気は、\n" + "  " + text0 + "\n" + "  " + text1 + "\n" + "だよ♪"
+	return text, nil
+}
+
+func replyWeather(string) linebot.SendingMessage {
+	text, err := forecastMessage()
+	if err != nil {
+		log.Print(err)
+	}
+
 	return linebot.NewTextMessage(text)
 }
 
