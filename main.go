@@ -44,8 +44,11 @@ func replyWeather(string) linebot.SendingMessage {
 		return nil
 	}
 
+	dateLabel := res.Forecasts[0].DateLabel
 	telop := res.Forecasts[0].Telop
-	return linebot.NewTextMessage(telop)
+
+	text := dateLabel + "の天気は「" + telop + "」だよ♪"
+	return linebot.NewTextMessage(text)
 }
 
 func main() {
