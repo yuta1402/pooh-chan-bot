@@ -20,9 +20,19 @@ type ForecastResponse struct {
 	Link string `json:"link"`
 
 	Forecasts []struct {
-		DateLabel string `json:"dateLabel"`
-		Telop     string `json:"telop"`
-		Date      string `json:"date"`
+		DateLabel   string `json:"dateLabel"`
+		Telop       string `json:"telop"`
+		Date        string `json:"date"`
+		Temperature struct {
+			Min struct {
+				Celsius    string `json:"celsius"`
+				Fahrenheit string `json:"fahrenheit"`
+			} `json:"min"`
+			Max struct {
+				Celsius    string `json:"celsius"`
+				Fahrenheit string `json:"fahrenheit"`
+			} `json:"max"`
+		} `json:"temperature"`
 	} `json:"forecasts"`
 
 	Location struct {
