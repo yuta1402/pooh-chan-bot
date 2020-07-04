@@ -130,6 +130,12 @@ func main() {
 
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
+				if strings.Contains(message.Text, "ぷぅちゃん") && strings.Contains(message.Text, "ハウス") {
+					log.Println("GroupID: ", event.Source.GroupID)
+					log.Println("RoomID: ", event.Source.RoomID)
+					break
+				}
+
 				for _, command := range commands {
 					if command.canHook(message.Text) {
 						replyMessage := command.MakeReply(message.Text)
