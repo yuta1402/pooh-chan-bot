@@ -37,10 +37,14 @@ func replyPoohChan(string) linebot.SendingMessage {
 func replyRandomMessage(string) linebot.SendingMessage {
 	messages := []string{
 		"ぷぅちゃん！",
+		"ぷぅちゃん♪",
+		"ぷぅちゃん♡",
+		"♡",
+		"♪",
 		"ぷぅ？",
 		"ぷっぷぷ〜ぷっぷぷ〜ぷっぷぷっぷぷぅ〜♪",
 		"シャーッ！！！",
-		"ギャーギャーギャーギャー...",
+		"ギャーギャー！ギャーギャー！",
 	}
 
 	r := rand.Intn(len(messages))
