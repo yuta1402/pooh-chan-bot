@@ -136,12 +136,15 @@ func main() {
 						log.Print(err)
 					}
 
-					if event.Source.GroupID != "" {
-						bot.LeaveGroup(event.Source.GroupID)
-					}
-
-					if event.Source.RoomID != "" {
-						bot.LeaveGroup(event.Source.RoomID)
+					switch event.Source.Type {
+					case linebot.EventSourceTypeGroup:
+						if _, err := bot.LeaveGroup(event.Source.GroupID).Do(); err != nil {
+							log.Print(err)
+						}
+					case linebot.EventSourceTypeRoom:
+						if _, err := bot.LeaveRoom(event.Source.RoomID).Do(); err != nil {
+							log.Print(err)
+						}
 					}
 
 					break
