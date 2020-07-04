@@ -59,10 +59,14 @@ func getForecastMessage(cityID string) (string, error) {
 		return "", errors.New("forecast data is not available")
 	}
 
-	telop := res.Forecasts[0].Telop
 	city := res.Location.City
+	telop := res.Forecasts[0].Telop
+	tempmin := res.Forecasts[0].Temperature.Min.Celsius
+	tempmax := res.Forecasts[0].Temperature.Max.Celsius
 
-	text := city + ": " + telop
+	text := city + ":\n" +
+		"  " + telop + "\n" +
+		"  " + "最低 " + tempmin + "℃" + " / " + "最高 " + tempmax + "℃"
 
 	return text, nil
 }
@@ -78,7 +82,7 @@ func forecastMessage() (string, error) {
 		return "", err
 	}
 
-	text := "今日の天気は、\n" + "  " + text0 + "\n" + "  " + text1 + "\n" + "だよ♪"
+	text := "今日の天気だよ♪\n" + "\n" + text0 + "\n" + text1
 	return text, nil
 }
 
