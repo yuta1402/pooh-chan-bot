@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
@@ -30,6 +32,21 @@ func (wc WordCommand) canHook(text string) bool {
 
 func replyPoohChan(string) linebot.SendingMessage {
 	return linebot.NewTextMessage("ぷぅちゃん！")
+}
+
+func replyRandomMessage(string) linebot.SendingMessage {
+	messages := []string{
+		"ぷぅちゃん！",
+		"ぷぅ？",
+		"ぷっぷぷ〜ぷっぷぷ〜ぷっぷぷっぷぷぅ〜♪",
+		"シャーッ！！！",
+		"ギャーギャーギャーギャー...",
+	}
+
+	r := rand.Intn(len(messages))
+	text := messages[r]
+
+	return linebot.NewTextMessage(text)
 }
 
 func getForecastMessage(cityID string) (string, error) {
@@ -75,6 +92,8 @@ func replyWeather(string) linebot.SendingMessage {
 }
 
 func main() {
+	rand.Seed(time.Now().Unix())
+
 	handler, err := httphandler.New(
 		os.Getenv("CHANNEL_SECRET"),
 		os.Getenv("CHANNEL_TOKEN"),
@@ -93,8 +112,8 @@ func main() {
 	commands := []WordCommand{
 		{[]string{"ぷぅちゃん", "天気"}, replyWeather},
 		{[]string{"ぷーちゃん", "天気"}, replyWeather},
-		{[]string{"ぷぅちゃん"}, replyPoohChan},
-		{[]string{"ぷーちゃん"}, replyPoohChan},
+		{[]string{"ぷぅちゃん"}, replyRandomMessage},
+		{[]string{"ぷーちゃん"}, replyRandomMessage},
 	}
 
 	handler.HandleEvents(func(events []*linebot.Event, r *http.Request) {
