@@ -130,12 +130,24 @@ func main() {
 
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
+				// 退出処理
 				if strings.Contains(message.Text, "ぷぅちゃん") && strings.Contains(message.Text, "ハウス") {
-					log.Println("GroupID: ", event.Source.GroupID)
-					log.Println("RoomID: ", event.Source.RoomID)
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("ばいばい...")).Do(); err != nil {
+						log.Print(err)
+					}
+
+					if event.Source.GroupID != "" {
+						bot.LeaveGroup(event.Source.GroupID)
+					}
+
+					if event.Source.RoomID != "" {
+						bot.LeaveGroup(event.Source.RoomID)
+					}
+
 					break
 				}
 
+				// 返信処理
 				for _, command := range commands {
 					if command.canHook(message.Text) {
 						replyMessage := command.MakeReply(message.Text)
