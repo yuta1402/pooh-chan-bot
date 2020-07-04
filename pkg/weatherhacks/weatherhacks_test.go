@@ -1,7 +1,6 @@
 package weatherhacks
 
 import (
-	"log"
 	"testing"
 )
 
@@ -22,12 +21,4 @@ func TestGetForecast(t *testing.T) {
 	if res.Location.Prefecture != "東京都" {
 		t.Fatalf("prefecture: %s, expected prefecture: %s", res.Location.Prefecture, "東京都")
 	}
-
-	// dateLabel := res.Forecasts[0].DateLabel
-	telop := res.Forecasts[0].Telop
-	city := res.Location.City
-
-	text := city + ": " + telop
-	// text := dateLabel + "の" + city + "の天気は「" + telop + "」だよ♪"
-	log.Print(text)
 }
