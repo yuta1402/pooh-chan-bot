@@ -61,12 +61,16 @@ func getForecastMessage(cityID string) (string, error) {
 
 	city := res.Location.City
 	telop := res.Forecasts[0].Telop
+
+	text := city + ":\n" +
+		"    " + telop + "\n"
+
 	tempmin := res.Forecasts[0].Temperature.Min.Celsius
 	tempmax := res.Forecasts[0].Temperature.Max.Celsius
 
-	text := city + ":\n" +
-		"  " + telop + "\n" +
-		"  " + "最低 " + tempmin + "℃" + " / " + "最高 " + tempmax + "℃"
+	if tempmin != "" && tempmax != "" {
+		text += "    " + "最低 " + tempmin + "℃" + " / " + "最高 " + tempmax + "℃"
+	}
 
 	return text, nil
 }
