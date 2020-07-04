@@ -1,16 +1,13 @@
 package poohchanbot
 
 import (
-	"errors"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/line/line-bot-sdk-go/linebot/httphandler"
-	"github.com/yuta1402/pooh-chan-bot/pkg/weatherhacks"
 )
 
 type WordCommand struct {
@@ -26,79 +23,6 @@ func (wc WordCommand) canHook(text string) bool {
 	}
 
 	return true
-}
-
-func replyPoohChan(string) linebot.SendingMessage {
-	return linebot.NewTextMessage("ぷぅちゃん！")
-}
-
-func replyRandomMessage(string) linebot.SendingMessage {
-	messages := []string{
-		"ぷぅちゃん！",
-		"ぷぅちゃん♪",
-		"ぷぅちゃん♡",
-		"♡",
-		"♪",
-		"ぷぅ？",
-		"ぷっぷぷ〜ぷっぷぷ〜ぷっぷぷっぷぷぅ〜♪",
-		"シャーッ！！！",
-		"ギャーギャー！ギャーギャー！",
-	}
-
-	r := rand.Intn(len(messages))
-	text := messages[r]
-
-	return linebot.NewTextMessage(text)
-}
-
-func getForecastMessage(cityID string) (string, error) {
-	res, err := weatherhacks.GetForecast(cityID)
-	if err != nil {
-		return "", err
-	}
-
-	if len(res.Forecasts) <= 0 {
-		return "", errors.New("forecast data is not available")
-	}
-
-	city := res.Location.City
-	telop := res.Forecasts[0].Telop
-
-	text := city + ":\n" +
-		"    " + telop + "\n"
-
-	tempmin := res.Forecasts[0].Temperature.Min.Celsius
-	tempmax := res.Forecasts[0].Temperature.Max.Celsius
-
-	if tempmin != "" && tempmax != "" {
-		text += "    " + "最低 " + tempmin + "℃" + " / " + "最高 " + tempmax + "℃"
-	}
-
-	return text, nil
-}
-
-func forecastMessage() (string, error) {
-	text0, err := getForecastMessage("130010")
-	if err != nil {
-		return "", err
-	}
-
-	text1, err := getForecastMessage("230010")
-	if err != nil {
-		return "", err
-	}
-
-	text := "今日の天気だよ♪\n" + "\n" + text0 + "\n" + text1
-	return text, nil
-}
-
-func replyWeather(string) linebot.SendingMessage {
-	text, err := forecastMessage()
-	if err != nil {
-		log.Print(err)
-	}
-
-	return linebot.NewTextMessage(text)
 }
 
 func Handler() http.Handler {
