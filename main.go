@@ -124,7 +124,7 @@ func main() {
 		}
 	})
 
-	http.Handle("/callback", handler)
+	http.Handle("/api/v1/webhook", handler)
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
