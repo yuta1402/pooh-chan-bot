@@ -1,1 +1,1 @@
-web: poohcanbot
+web: poohchanbot
