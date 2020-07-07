@@ -56,6 +56,25 @@ func Handler() http.Handler {
 
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
+				if strings.HasPrefix(message.Text, "/print-id") {
+					switch event.Source.Type {
+					case linebot.EventSourceTypeUser:
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(event.Source.UserID)).Do(); err != nil {
+							log.Print(err)
+						}
+
+					case linebot.EventSourceTypeGroup:
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(event.Source.GroupID)).Do(); err != nil {
+							log.Print(err)
+						}
+
+					case linebot.EventSourceTypeRoom:
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(event.Source.RoomID)).Do(); err != nil {
+							log.Print(err)
+						}
+					}
+				}
+
 				// 退出処理
 				if strings.Contains(message.Text, "ぷぅちゃん") && strings.Contains(message.Text, "ハウス") {
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("ばいばい...")).Do(); err != nil {
