@@ -49,11 +49,14 @@ func forecastMessage() (string, error) {
 	return text, nil
 }
 
-func replyWeather(string) linebot.SendingMessage {
+func replyWeather(string) *sendingMessageQueue {
 	text, err := forecastMessage()
 	if err != nil {
 		log.Print(err)
 	}
 
-	return linebot.NewTextMessage(text)
+	q := newSendingMessageQueue()
+	q.enque(linebot.NewTextMessage(text))
+
+	return q
 }

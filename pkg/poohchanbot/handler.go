@@ -12,7 +12,7 @@ import (
 
 type WordCommand struct {
 	AllHookWords []string
-	MakeReply    func(string) linebot.SendingMessage
+	MakeReply    func(string) *sendingMessageQueue
 }
 
 func (wc WordCommand) canHook(text string) bool {
@@ -98,8 +98,8 @@ func Handler() http.Handler {
 				// 返信処理
 				for _, command := range commands {
 					if command.canHook(message.Text) {
-						replyMessage := command.MakeReply(message.Text)
-						if _, err = bot.ReplyMessage(event.ReplyToken, replyMessage).Do(); err != nil {
+						messages := command.MakeReply(message.Text)
+						if _, err = bot.ReplyMessage(event.ReplyToken, messages.queue...).Do(); err != nil {
 							log.Print(err)
 						}
 						break
