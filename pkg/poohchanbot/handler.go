@@ -38,6 +38,10 @@ func Handler() http.Handler {
 	commands := []WordCommand{
 		{[]string{"ぷぅちゃん", "天気"}, replyWeather},
 		{[]string{"ぷーちゃん", "天気"}, replyWeather},
+		{[]string{"ぷぅちゃん", "しゃしん"}, replyRandomImage},
+		{[]string{"ぷぅちゃん", "写真"}, replyRandomImage},
+		{[]string{"ぷーちゃん", "しゃしん"}, replyRandomImage},
+		{[]string{"ぷーちゃん", "写真"}, replyRandomImage},
 		{[]string{"ぷぅちゃん"}, replyRandomMessage},
 		{[]string{"ぷーちゃん"}, replyRandomMessage},
 	}
