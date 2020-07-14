@@ -36,14 +36,12 @@ func Handler() http.Handler {
 	}
 
 	commands := []WordCommand{
-		{[]string{"ぷぅちゃん", "天気"}, replyWeather},
-		{[]string{"ぷーちゃん", "天気"}, replyWeather},
-		{[]string{"ぷぅちゃん", "しゃしん"}, replyRandomImage},
-		{[]string{"ぷぅちゃん", "写真"}, replyRandomImage},
-		{[]string{"ぷーちゃん", "しゃしん"}, replyRandomImage},
-		{[]string{"ぷーちゃん", "写真"}, replyRandomImage},
 		{[]string{"ぷぅちゃん"}, replyRandomMessage},
 		{[]string{"ぷーちゃん"}, replyRandomMessage},
+		{[]string{"しゃしん"}, replyRandomImage},
+		{[]string{"写真"}, replyRandomImage},
+		{[]string{"てんき"}, replyWeather},
+		{[]string{"天気"}, replyWeather},
 	}
 
 	handler.HandleEvents(func(events []*linebot.Event, r *http.Request) {
